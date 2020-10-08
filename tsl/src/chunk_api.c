@@ -4,6 +4,7 @@
  * LICENSE-TIMESCALE for a copy of the license.
  */
 #include <postgres.h>
+#include <utils/array.h>
 #include <utils/jsonb.h>
 #include <utils/lsyscache.h>
 #include <utils/syscache.h>
@@ -949,8 +950,7 @@ chunk_update_colstats(Chunk *chunk, int16 attnum, float nullfract, int32 width, 
 		Assert(HeapTupleIsValid(type_tuple));
 		type = (Form_pg_type) GETSTRUCT(type_tuple);
 		Assert(slot_values[k] != NULL);
-		nelems = DatumGetInt32(
-			DirectFunctionCall2(array_length, PointerGetDatum(slot_values[k]), Int32GetDatum(1)));
+		nelems = ARR_DIMS(slot_values[k])[0];
 
 		decoded_data = palloc0(nelems * sizeof(Datum));
 
